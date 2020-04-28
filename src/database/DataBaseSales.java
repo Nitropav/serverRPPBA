@@ -4,8 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataBaseAvto {
-
+public class DataBaseSales {
     private static Connection connection;
 
     public static void connect(String database, String user, String password, String port) {
@@ -26,8 +25,7 @@ public class DataBaseAvto {
         ResultSet resultSet;
         String accountType = "";
 
-        String select = "SELECT * FROM employee, passwords WHERE E_LOGIN = ? AND PASS = ?";//в это строке сразу второй запрос
-        //String select1 = "SELECT * FROM passwords WHERE PASS = ?";
+        String select = "SELECT * FROM employee, passwords WHERE E_LOGIN = ? AND PASS = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(select);
@@ -47,11 +45,11 @@ public class DataBaseAvto {
         return accountType;
     }
 
-    public static List<String> getMakes() {
+    public static List<String> getType() {
         ResultSet resultSet;
         List<String> makes = new ArrayList<>(0);
 
-        String select = "SELECT * FROM make";
+        String select = "SELECT * FROM rppba.make ";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(select);
             resultSet = preparedStatement.executeQuery();
@@ -64,7 +62,144 @@ public class DataBaseAvto {
         return makes;
     }
 
-    public static List<String> getModels(String make) {
+    public static boolean addNewProduct(String model, String price, String type, String shell, String kernel) {
+        String insert = "INSERT INTO rppba.product (MODEL, PRICE, TYP, SHELL, KEREL) VALUES (?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(insert);
+            preparedStatement.setString(1, model);
+            preparedStatement.setInt(2, Integer.valueOf(price));
+            preparedStatement.setString(3, type);
+            preparedStatement.setString(4, shell);
+            preparedStatement.setString(5, kernel);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static List<String> getShellPen() {
+        ResultSet resultSet;
+        List<String> shell_pen = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.shell_fpen ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                shell_pen.add(resultSet.getString("TYP"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return shell_pen;
+    }
+
+    public static List<String> getShellPencil() {
+        ResultSet resultSet;
+        List<String> shell_pencil = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.shell_fpencil ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                shell_pencil.add(resultSet.getString("TYP"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return shell_pencil;
+    }
+
+    public static List<String> getKernelPen() {
+        ResultSet resultSet;
+        List<String> kernel_pen = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.kernel_fpen ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                kernel_pen.add(resultSet.getString("TYP"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return kernel_pen;
+    }
+
+    public static List<String> getKernelPencil() {
+        ResultSet resultSet;
+        List<String> kernel_pencil = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.kernel_fpencil ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                kernel_pencil.add(resultSet.getString("TYP"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return kernel_pencil;
+    }
+
+    public static boolean addNewClient(String name, String surname, String number, String email) {
+
+        String insert = "INSERT INTO rppba.client (O_FNAME, O_LNAME, O_TEL, O_MAIL) VALUES (?, ?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(insert);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, number);
+            preparedStatement.setString(4, email);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateClient(String ID, String name, String surname, String number, String email) {
+        String update = "UPDATE rppba.client SET O_FNAME = ?, O_LNAME = ?, O_TEL = ?, O_MAIL = ? WHERE C_ID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, number);
+            preparedStatement.setString(4, email);
+            preparedStatement.setInt(5, Integer.valueOf(ID));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateProduct(String ID, String model, String price, String type, String shell, String kernel) {
+        String updateProd = "UPDATE rppba.product SET MODEL = ?, PRICE = ?, TYP = ?, SHELL = ?, KEREL = ? WHERE ID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(updateProd);
+            preparedStatement.setString(1, model);
+            preparedStatement.setInt(2, Integer.valueOf(price));
+            preparedStatement.setString(3, type);
+            preparedStatement.setString(4, shell);
+            preparedStatement.setString(5, kernel);
+            preparedStatement.setInt(6, Integer.valueOf(ID));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    //----------------------------
+    /*public static List<String> getModels(String make) {
         ResultSet resultSet;
         List<String> models = new ArrayList<>(0);
 
@@ -83,6 +218,28 @@ public class DataBaseAvto {
         return models;
     }
 
+public static boolean addManager(String name, String surname, String login, String password) {
+        String insertUser = "INSERT INTO course.users (account_type, login, password) VALUES (?, ?, ?)";
+        String insertManager = "INSERT INTO course.managers (name, surname, login, password) VALUES (?, ?, ?, ?)";
+
+        try {
+            PreparedStatement preparedStatementUser = connection.prepareStatement(insertUser);
+            PreparedStatement preparedStatementManager = connection.prepareStatement(insertManager);
+            preparedStatementUser.setString(1, "manager");
+            preparedStatementUser.setString(2, login);
+            preparedStatementUser.setString(3, password);
+            preparedStatementManager.setString(1, name);
+            preparedStatementManager.setString(2, surname);
+            preparedStatementManager.setString(3, login);
+            preparedStatementManager.setString(4, password);
+            preparedStatementUser.executeUpdate();
+            preparedStatementManager.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     public static ArrayList<String> getOrders() {
         ResultSet resultSet;
         ArrayList<String> ordersList = new ArrayList<>(0);
@@ -237,25 +394,7 @@ public class DataBaseAvto {
         return true;
     }
 
-    public static boolean addSupplierOrder(String order) {
-        String[] orderDetails = order.split(" ", 6);
-        System.out.println(order);
-        String insert = "INSERT INTO course.supplier_order (make, supplier, model, quantity, color) " +
-                "VALUES (?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setString(1, orderDetails[1]);
-            preparedStatement.setString(2, orderDetails[3]);
-            preparedStatement.setString(3, orderDetails[5]);
-            preparedStatement.setString(4, orderDetails[4]);
-            preparedStatement.setString(5, orderDetails[2]);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+
 
     public static boolean removeOrder(int orderNumber) {
 
@@ -266,29 +405,6 @@ public class DataBaseAvto {
             preparedStatement.setInt(1, orderNumber);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean addManager(String name, String surname, String login, String password) {
-        String insertUser = "INSERT INTO course.users (account_type, login, password) VALUES (?, ?, ?)";
-        String insertManager = "INSERT INTO course.managers (name, surname, login, password) VALUES (?, ?, ?, ?)";
-
-        try {
-            PreparedStatement preparedStatementUser = connection.prepareStatement(insertUser);
-            PreparedStatement preparedStatementManager = connection.prepareStatement(insertManager);
-            preparedStatementUser.setString(1, "manager");
-            preparedStatementUser.setString(2, login);
-            preparedStatementUser.setString(3, password);
-            preparedStatementManager.setString(1, name);
-            preparedStatementManager.setString(2, surname);
-            preparedStatementManager.setString(3, login);
-            preparedStatementManager.setString(4, password);
-            preparedStatementUser.executeUpdate();
-            preparedStatementManager.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
         return true;
@@ -459,5 +575,5 @@ public class DataBaseAvto {
         }
         return true;
 
-    }
+    }*/
 }

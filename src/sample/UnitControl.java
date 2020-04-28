@@ -1,6 +1,6 @@
 package sample;
 
-import database.DataBaseAvto;
+import database.DataBaseSales;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -23,7 +23,7 @@ public class UnitControl {
 
 
     public void connectDB() {
-        DataBaseAvto.connect(db.getText(), login.getText(), psswrd.getText(), prt.getText());
+        DataBaseSales.connect(db.getText(), login.getText(), psswrd.getText(), prt.getText());
     }
 
     public void startServer() {

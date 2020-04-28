@@ -6,7 +6,7 @@
 
 <Pane prefHeight="300.0" prefWidth="523.0" style="-fx-background-color: #ffffcc;" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.UnitControl">
    <children>
-      <Button fx:id="connectdb" layoutX="300.0" layoutY="245.0" mnemonicParsing="false" onAction="#connectDB" prefHeight="32.0" prefWidth="200.0" text="Установить соединение с БД" />
+      <Button fx:id="connectdb" layoutX="300.0" layoutY="245.0" mnemonicParsing="false" onAction="#connectDB" prefHeight="32.0" prefWidth="200.0" style="-fx-background-color: #9378FF;" text="Установить соединение с БД" />
       <TextField fx:id="db" layoutX="78.0" layoutY="88.0" text="Введите название БД" />
       <TextField fx:id="prt" layoutX="78.0" layoutY="137.0" text="3306" />
       <TextField fx:id="login" layoutX="81.0" layoutY="210.0" text="" />
@@ -38,7 +38,7 @@
             <Font size="14.0" />
          </font></Label>
       <Label fx:id="inputdb" layoutX="250.0" layoutY="49.0" text="Input database" textFill="RED" visible="false" />
-      <Button fx:id="srvOn" layoutX="300.0" layoutY="206.0" mnemonicParsing="false" onAction="#startServer" prefHeight="32.0" prefWidth="122.0" text="Запустить сервер" />
-      <Button fx:id="srvOff" layoutX="300.0" layoutY="100.0" mnemonicParsing="false" onAction="#stopServer" prefHeight="32.0" prefWidth="122.0" text="Отключить сервер" visible="false" />
+      <Button fx:id="srvOn" layoutX="300.0" layoutY="206.0" mnemonicParsing="false" onAction="#startServer" prefHeight="32.0" prefWidth="122.0" style="-fx-background-color: #9378FF;" text="Запустить сервер" />
+      <Button fx:id="srvOff" layoutX="300.0" layoutY="100.0" mnemonicParsing="false" onAction="#stopServer" prefHeight="32.0" prefWidth="122.0" style="-fx-background-color: #9378FF;" text="Отключить сервер" visible="false" />
    </children>
 </Pane>

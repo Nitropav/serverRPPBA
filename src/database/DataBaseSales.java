@@ -198,6 +198,217 @@ public class DataBaseSales {
         }
         return true;
     }
+
+    public static String getIdProduct(String model) {
+        ResultSet resultSet;
+        String id = "";
+        String select = "SELECT ID FROM PRODUCT WHERE MODEL = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            preparedStatement.setString(1, model);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getString("ID");
+            } else {
+                id = "";
+            }
+        } catch (SQLException e) {
+            System.out.println("Not ID");
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public static String getIdClient(String lastName) {
+        ResultSet resultSet;
+        String id = "";
+        String select = "SELECT C_ID FROM client WHERE O_LNAME = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            preparedStatement.setString(1, lastName);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getString("C_ID");
+            } else {
+                id = "";
+            }
+        } catch (SQLException e) {
+            System.out.println("Not ID");
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public static List<String> getDate() {
+        ResultSet resultSet;
+        List<String> date = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.s13dat WHERE D_KOD = 1 ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                date.add(resultSet.getString("DAT"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static List<String> getModel() {
+        ResultSet resultSet;
+        List<String> modelList = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.product ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                modelList.add(resultSet.getString("MODEL"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return modelList;
+    }
+
+    public static boolean addProduction(String date, String idProduct, String kol) {
+        String insert = "INSERT INTO rppba.production (DAT, ID, KOL) VALUES (?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(insert);
+            preparedStatement.setString(1, date);
+            preparedStatement.setString(2, idProduct);
+            preparedStatement.setString(3, kol);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean addOrders(String address, String condittion, String cID, String dID, String sID) {
+        String insert = "INSERT INTO rppba.orders(O_ADR, O_COST, O_CONDITION, C_ID, D_ID, S_ID) VALUES (?, null, ?, ?, ?, ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(insert);
+            preparedStatement.setString(1, address);
+            preparedStatement.setString(2, condittion);
+            preparedStatement.setString(3, cID);
+            preparedStatement.setString(4, dID);
+            preparedStatement.setString(5, sID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static List<String> getStates() {
+        ResultSet resultSet;
+        List<String> statesList = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.states ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                statesList.add(resultSet.getString("S_NAME"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statesList;
+    }
+
+    public static String getIdStates(String name){
+        ResultSet resultSet;
+        String id = "";
+        String select = "SELECT ST_ID FROM states WHERE S_NAME = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            preparedStatement.setString(1, name);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getString("ST_ID");
+            } else {
+                id = "";
+            }
+        } catch (SQLException e) {
+            System.out.println("Not ID");
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public static List<String> getLastName() {
+        ResultSet resultSet;
+        List<String> lastNameList = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.client ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                lastNameList.add(resultSet.getString("O_LNAME"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lastNameList;
+    }
+
+    public static List<String> getDelivery() {
+        ResultSet resultSet;
+        List<String> deliveryList = new ArrayList<>(0);
+
+        String select = "SELECT * FROM rppba.delivery ";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                deliveryList.add(resultSet.getString("D_NAME"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return deliveryList;
+    }
+
+    public static String getIdDelivery(String name){
+        ResultSet resultSet;
+        String id = "";
+        String select = "SELECT D_ID FROM delivery WHERE D_NAME = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            preparedStatement.setString(1, name);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getString("D_ID");
+            } else {
+                id = "";
+            }
+        } catch (SQLException e) {
+            System.out.println("Not ID");
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public static boolean addFilling(String idProduct, String count){
+        String insert = "INSERT INTO rppba.filling(O_ID, ID, F_KOL) SELECT MAX(O_ID), ?, ? FROM ORDERS";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(insert);
+            preparedStatement.setString(1, idProduct);
+            preparedStatement.setString(2, count);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     //----------------------------
     /*public static List<String> getModels(String make) {
         ResultSet resultSet;

@@ -44,6 +44,49 @@ public class ProcessingCommand {
                 commands = command.split(" ", 7);
                 result = DataBaseSales.updateProduct(commands[1], commands[2], commands[3], commands[4], commands[5], commands[6]);
                 break;
+            case "getidproduct":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.getIdProduct(commands[1]);
+                break;
+            case "getdate":
+                result = DataBaseSales.getDate();
+                break;
+            case "getmodel":
+                result = DataBaseSales.getModel();
+                break;
+            case "addproduction":
+                commands = command.split(" ", 4);
+                result = DataBaseSales.addProduction(commands[1], commands[2], commands[3]);
+                break;
+            case "getidclient":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.getIdClient(commands[1]);
+                break;
+            case "addoredersch1":
+                commands = command.split(" ", 6);
+                result = DataBaseSales.addOrders(commands[1], commands[2], commands[3], commands[4], commands[5]);
+                break;
+            case "getlastnameclient":
+                result = DataBaseSales.getLastName();
+                break;
+            case "getdelivery":
+                result = DataBaseSales.getDelivery();
+                break;
+            case "getstates":
+                result = DataBaseSales.getStates();
+                break;
+            case "getiddelivery":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.getIdDelivery(commands[1]);
+                break;
+            case "getidstates":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.getIdStates(commands[1]);
+                break;
+            case "addfilling":
+                commands = command.split(" ", 3);
+                result = DataBaseSales.addFilling(commands[1], commands[2]);
+                break;
             /*case "getmodels":
                 commands = command.split(" ", 2);
                 result = DataBaseSales.getModels(commands[1]);

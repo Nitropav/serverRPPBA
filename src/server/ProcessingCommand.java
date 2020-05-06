@@ -87,6 +87,27 @@ public class ProcessingCommand {
                 commands = command.split(" ", 3);
                 result = DataBaseSales.addFilling(commands[1], commands[2]);
                 break;
+            case "removeorder":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.removeOrder(Integer.valueOf(commands[1]));
+                break;
+            case "getorderview":
+                result = DataBaseSales.getOrders();
+                break;
+            case "shiporders":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.shipOrders(Integer.valueOf(commands[1]));
+                break;
+            case "getshipOrders":
+                result = DataBaseSales.getShipOrders();
+                break;
+            case "getrezerorders":
+                result = DataBaseSales.getRezervOrders();
+                break;
+            case "rezerorders":
+                commands = command.split(" ", 2);
+                result = DataBaseSales.rezervOrders(Integer.valueOf(commands[1]));
+                break;
             /*case "getmodels":
                 commands = command.split(" ", 2);
                 result = DataBaseSales.getModels(commands[1]);

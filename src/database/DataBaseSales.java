@@ -289,7 +289,7 @@ public class DataBaseSales {
     }
 
     public static boolean addOrders(String address, String condittion, String cID, String dID, String sID) {
-        String insert = "INSERT INTO rppba.orders(O_ADR, O_COST, O_CONDITION, C_ID, D_ID, S_ID) VALUES (?, null, ?, ?, ?, ?)";
+        String insert = "INSERT INTO rppba.orders(O_ADR, O_COST, O_CONDITION, C_ID, D_ID, S_ID) VALUES (?, 0, ?, ?, ?, ?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(insert);
             preparedStatement.setString(1, address);
@@ -322,7 +322,7 @@ public class DataBaseSales {
         return statesList;
     }
 
-    public static String getIdStates(String name){
+    public static String getIdStates(String name) {
         ResultSet resultSet;
         String id = "";
         String select = "SELECT ST_ID FROM states WHERE S_NAME = ?";
@@ -376,7 +376,7 @@ public class DataBaseSales {
         return deliveryList;
     }
 
-    public static String getIdDelivery(String name){
+    public static String getIdDelivery(String name) {
         ResultSet resultSet;
         String id = "";
         String select = "SELECT D_ID FROM delivery WHERE D_NAME = ?";
@@ -396,18 +396,144 @@ public class DataBaseSales {
         return id;
     }
 
-    public static boolean addFilling(String idProduct, String count){
-        String insert = "INSERT INTO rppba.filling(O_ID, ID, F_KOL) SELECT MAX(O_ID), ?, ? FROM ORDERS";
+    public static boolean addFilling(String idProduct, String count) {
+        String string = "";
+        String max = "SELECT MAX(O_ID) m FROM rppba.orders";
+        try {
+            Statement preparedStatement1 = connection.createStatement();
+            ResultSet maxId = preparedStatement1.executeQuery(max);
+            while (maxId.next()) {
+                string = maxId.getString("m");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        String insert = "INSERT INTO rppba.filling(O_ID, ID, F_KOL) VALUES (?, ?, ?) ";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(insert);
-            preparedStatement.setString(1, idProduct);
-            preparedStatement.setString(2, count);
+            preparedStatement.setString(1, string);
+            preparedStatement.setString(2, idProduct);
+            preparedStatement.setString(3, count);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
         return true;
+    }
+
+    public static ArrayList<String> getOrders() {
+        ResultSet resultSet;
+        ArrayList<String> ordersList = new ArrayList<>(0);
+
+        String select = "SELECT o.O_ID, o.O_COST, o.O_ADR, c.O_LNAME, d.D_NAME, s.S_NAME, o.DAT FROM rppba.orders o, rppba.client c, rppba.delivery d, rppba.states s WHERE o.D_ID = d.D_ID AND o.S_ID = s.ST_ID AND o.C_ID = c.C_ID";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder order = new StringBuilder();
+                order.append(resultSet.getString("O_ID")).append(" ").
+                        append(resultSet.getString("O_COST")).append(" ").
+                        append(resultSet.getString("O_ADR")).append(" ").
+                        append(resultSet.getString("O_LNAME")).append(" ").
+                        append(resultSet.getString("D_NAME")).append(" ").
+                        append(resultSet.getString("S_NAME")).append(" ").
+                        append(resultSet.getString("DAT")).append(" ");
+                ordersList.add(order.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return ordersList;
+    }
+
+    public static boolean removeOrder(int orderNumber) {
+
+        String delete = "DELETE FROM rppba.orders WHERE O_ID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(delete);
+            preparedStatement.setInt(1, orderNumber);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean shipOrders(int id){
+        String update = "UPDATE rppba.orders SET S_ID=3 where O_ID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean rezervOrders(int id){
+        String updateOrders = "update rppba.orders set S_ID=2 where O_ID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(updateOrders);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static ArrayList<String> getShipOrders() {
+        ResultSet resultSet;
+        ArrayList<String> ordersList = new ArrayList<>(0);
+
+        String select = "SELECT o.O_ID, o.O_COST, o.O_ADR, c.O_LNAME, d.D_NAME, s.S_NAME, o.DAT FROM rppba.orders o, rppba.client c, rppba.delivery d, rppba.states s WHERE o.D_ID = d.D_ID AND o.S_ID = s.ST_ID AND o.C_ID = c.C_ID AND S_ID = 2";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder order = new StringBuilder();
+                order.append(resultSet.getString("O_ID")).append(" ").
+                        append(resultSet.getString("O_COST")).append(" ").
+                        append(resultSet.getString("O_ADR")).append(" ").
+                        append(resultSet.getString("O_LNAME")).append(" ").
+                        append(resultSet.getString("D_NAME")).append(" ").
+                        append(resultSet.getString("S_NAME")).append(" ").
+                        append(resultSet.getString("DAT")).append(" ");
+                ordersList.add(order.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return ordersList;
+    }
+
+    public static ArrayList<String> getRezervOrders() {
+        ResultSet resultSet;
+        ArrayList<String> ordersList = new ArrayList<>(0);
+
+        String select = "SELECT o.O_ID, o.O_COST, o.O_ADR, c.O_LNAME, d.D_NAME, s.S_NAME, o.DAT FROM rppba.orders o, rppba.client c, rppba.delivery d, rppba.states s WHERE o.D_ID = d.D_ID AND o.S_ID = s.ST_ID AND o.C_ID = c.C_ID AND DAT = current_date AND S_ID = 1";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder order = new StringBuilder();
+                order.append(resultSet.getString("O_ID")).append(" ").
+                        append(resultSet.getString("O_COST")).append(" ").
+                        append(resultSet.getString("O_ADR")).append(" ").
+                        append(resultSet.getString("O_LNAME")).append(" ").
+                        append(resultSet.getString("D_NAME")).append(" ").
+                        append(resultSet.getString("S_NAME")).append(" ").
+                        append(resultSet.getString("DAT")).append(" ");
+                ordersList.add(order.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return ordersList;
     }
     //----------------------------
     /*public static List<String> getModels(String make) {

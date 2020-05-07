@@ -119,6 +119,9 @@ public class ProcessingCommand {
                 commands =command.split(" ", 2);
                 result = DataBaseSales.notRezervOrders(Integer.valueOf(commands[1]));
                 break;
+            case "loyaltyupdate":
+                result = DataBaseSales.loyaltyUpdate();
+                break;
             default:
                 result = false;
                 break;

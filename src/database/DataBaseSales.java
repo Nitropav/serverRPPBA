@@ -505,7 +505,7 @@ public class DataBaseSales {
     }
 
     public static boolean notRezervOrders(int id) {
-        String updateOrders = "update rppba.orders set S_ID=1 where O_ID = ?";
+        String updateOrders = "update rppba.orders set S_ID=2 where O_ID = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(updateOrders);
             preparedStatement.setInt(1, id);
@@ -590,6 +590,18 @@ public class DataBaseSales {
             preparedStatement.setString(1, date);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean loyaltyUpdate(){
+        String update = "UPDATE rppba.client SET l_id=l_id+1 WHERE l_id<5 AND c_id IN (SELECT t1.c_id from (SELECT c.c_id, c.l_id, l.l_boundary bo FROM client c, loyalty l WHERE c.l_id=l.l_id) t1, (SELECT c_id, SUM(o_cost) sc FROM rppba.orders WHERE MONTH(dat)=MONTH(date_add(current_date, interval -1 day)) AND YEAR(dat)=YEAR(current_date) GROUP BY c_id) t2 WHERE t1.c_id=t2.c_id AND t1.bo<t2.sc)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(update);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
         return true;

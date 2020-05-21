@@ -44,6 +44,10 @@ public class ProcessingCommand {
                 commands = command.split(" ", 7);
                 result = DataBaseSales.updateProduct(commands[1], commands[2], commands[3], commands[4], commands[5], commands[6]);
                 break;
+            case "updateloyalty":
+                commands = command.split(" ", 4);
+                result = DataBaseSales.updateLoyalty(commands[1], commands[2], commands[3]);
+                break;
             case "getidproduct":
                 commands = command.split(" ", 2);
                 result = DataBaseSales.getIdProduct(commands[1]);
@@ -104,6 +108,12 @@ public class ProcessingCommand {
             case "getrezerorders":
                 result = DataBaseSales.getRezervOrders();
                 break;
+            case "getproductall":
+                result = DataBaseSales.getProductInfa();
+                break;
+            case "getloyaltyall":
+                result = DataBaseSales.getLoyaltyAll();
+                break;
             case "rezerorders":
                 commands = command.split(" ", 2);
                 result = DataBaseSales.rezervOrders(Integer.valueOf(commands[1]));
@@ -116,11 +126,20 @@ public class ProcessingCommand {
                 result = DataBaseSales.addDateOfOrders(commands[1]);
                 break;
             case "notrezervorders":
-                commands =command.split(" ", 2);
+                commands = command.split(" ", 2);
                 result = DataBaseSales.notRezervOrders(Integer.valueOf(commands[1]));
                 break;
             case "loyaltyupdate":
                 result = DataBaseSales.loyaltyUpdate();
+                break;
+            case "getclientinfa":
+                result = DataBaseSales.getClientInfa();
+                break;
+            case "getresidualinfa":
+                result = DataBaseSales.getResidualInformation();
+                break;
+            case "getproductioninfa":
+                result = DataBaseSales.getProductionInfa();
                 break;
             default:
                 result = false;

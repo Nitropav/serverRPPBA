@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataBaseSales {
+
     private static Connection connection;
 
     public static void connect(String database, String user, String password, String port) {
@@ -191,6 +192,21 @@ public class DataBaseSales {
             preparedStatement.setString(4, shell);
             preparedStatement.setString(5, kernel);
             preparedStatement.setInt(6, Integer.valueOf(ID));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateLoyalty(String ID, String sale, String boundary) {
+        String updateProd = "UPDATE rppba.loyalty SET L_SALE = ?, L_BOUNDARY = ? WHERE L_ID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(updateProd);
+            preparedStatement.setString(1, sale);
+            preparedStatement.setString(2, boundary);
+            preparedStatement.setInt(3, Integer.parseInt(ID));
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -480,6 +496,26 @@ public class DataBaseSales {
         return true;
     }
 
+    public static ArrayList<String> getProductionInfa(){
+        ResultSet resultSet;
+        ArrayList<String> ordersList = new ArrayList<>(0);
+        String select = "select f.o_id, p.model, sum(f.f_kol) sc from filling f, product p where f.id=p.id group by p.model";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder order = new StringBuilder();
+                order.append(resultSet.getString("O_ID")).append(" ").
+                        append(resultSet.getString("MODEL")).append(" ").
+                        append(resultSet.getString("SC")).append(" ");
+                ordersList.add(order.toString());
+            }
+        } catch (SQLException e) {
+        }
+        return ordersList;
+
+    }
+
     public static boolean shipOrders(int id) {
         String update = "UPDATE rppba.orders SET S_ID=3 where O_ID = ?";
         try {
@@ -541,7 +577,7 @@ public class DataBaseSales {
         return ordersList;
     }
 
-    public static ArrayList<String> getRezervOrders() {
+    public static List<String> getRezervOrders() {
         ResultSet resultSet;
         ArrayList<String> ordersList = new ArrayList<>(0);
 
@@ -564,6 +600,97 @@ public class DataBaseSales {
 
         }
         return ordersList;
+    }
+
+    public static ArrayList<String> getClientInfa(){
+        ResultSet resultSet;
+        ArrayList<String> clientList = new ArrayList<>(0);
+
+        String select = "select c.c_id, c.o_fname, c.o_lname, c.o_tel, c.o_mail, l.L_SALE, l.L_NAME from client c, loyalty l where c.l_id=l.l_id";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder client = new StringBuilder();
+                client.append(resultSet.getString("C_ID")).append(" ").
+                        append(resultSet.getString("O_FNAME")).append(" ").
+                        append(resultSet.getString("O_LNAME")).append(" ").
+                        append(resultSet.getString("O_TEL")).append(" ").
+                        append(resultSet.getString("O_MAIL")).append(" ").
+                        append(resultSet.getString("L_NAME")).append(" ").
+                        append(resultSet.getString("L_SALE")).append(" ");
+                clientList.add(client.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return clientList;
+    }
+
+    public static ArrayList<String> getProductInfa(){
+        ResultSet resultSet;
+        ArrayList<String> productList = new ArrayList<>(0);
+
+        String select = "select p.ID, p.MODEL, p.PRICE, p.TYP, p.SHELL, p.KEREL from rppba.product p";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder client = new StringBuilder();
+                client.append(resultSet.getString("ID")).append(" ").
+                        append(resultSet.getString("MODEL")).append(" ").
+                        append(resultSet.getString("PRICE")).append(" ").
+                        append(resultSet.getString("TYP")).append(" ").
+                        append(resultSet.getString("SHELL")).append(" ").
+                        append(resultSet.getString("KEREL")).append(" ");
+                productList.add(client.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return productList;
+    }
+
+    public static ArrayList<String> getLoyaltyAll(){
+        ResultSet resultSet;
+        ArrayList<String> loyaltyList = new ArrayList<>(0);
+
+        String select = "select l.L_ID, l.L_NAME, l.L_SALE, l.L_BOUNDARY from rppba.loyalty l";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder client = new StringBuilder();
+                client.append(resultSet.getString("L_ID")).append(" ").
+                        append(resultSet.getString("L_NAME")).append(" ").
+                        append(resultSet.getString("L_SALE")).append(" ").
+                        append(resultSet.getString("L_BOUNDARY")).append(" ");
+                loyaltyList.add(client.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return loyaltyList;
+    }
+
+    public static ArrayList<String> getResidualInformation(){
+        ResultSet resultSet;
+        ArrayList<String> residualList = new ArrayList<>(0);
+
+        String select = "select p.model, r.R_KOL from product p, residual r where p.id=r.id";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(select);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                StringBuilder residual = new StringBuilder();
+                residual.append(resultSet.getString("MODEL")).append(" ").
+                        append(resultSet.getString("R_KOL")).append(" ");
+                residualList.add(residual.toString());
+            }
+        } catch (SQLException e) {
+
+        }
+        return residualList;
     }
 
     public static List<String> getDateResidual() {
